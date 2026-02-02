@@ -8,11 +8,6 @@ export default function HeroSection() {
       <div className="container mx-auto">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 animate-fadeInLeft">
-            <div className="inline-block">
-              <span className="bg-primary-100 text-primary-700 px-4 py-2 rounded-full text-sm font-semibold">
-                ✨ Atendimento de Excelência desde 2008
-              </span>
-            </div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-bold text-slate-900 leading-tight">
               Sua saúde é nossa
               <span className="block bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent">
