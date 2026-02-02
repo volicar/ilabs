@@ -55,17 +55,6 @@ export default function HeroSection() {
                 alt="Profissional de saúde"
                 className="rounded-2xl w-full h-[400px] sm:h-[500px] object-cover shadow-lg"
               />
-              <div className="absolute -bottom-4 sm:-bottom-6 -right-4 sm:-right-6 bg-white rounded-2xl p-4 sm:p-6 shadow-xl">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
-                    <Award className="text-white" size={20} />
-                  </div>
-                  <div>
-                    <div className="font-bold text-sm sm:text-base text-slate-900">Certificada</div>
-                    <div className="text-xs sm:text-sm text-slate-600">ISO 9001</div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

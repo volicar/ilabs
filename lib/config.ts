@@ -35,13 +35,14 @@ export const siteConfig = {
   },
 
   // URL do Google Maps Embed
-  mapsEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4609.870222017115!2d-43.25735892374452!3d-22.861403936252504!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997c0081a3d0db%3A0x4862f5196590aada!2sCondom%C3%ADnio%20Vila%20Bonsucesso%20-%20Rua%20Cardoso%20de%20Morais%2C%20224%20-%20Bonsucesso%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2021032-025!5e1!3m2!1spt-BR!2sbr!4v1770000623266!5m2!1spt-BR!2sbr',
+  mapsEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d7352.814534964087!2d-43.254784!3d-22.861409!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997c00818c7a11%3A0x158e723337cee641!2sCondom%C3%ADnio%20Vila%20Bonsucesso%20-%20Rua%20Cardoso%20de%20Morais%20-%20Bonsucesso%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2021032-000!5e0!3m2!1spt-BR!2sbr!4v1770009666914!5m2!1spt-BR!2sbrhttps://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4609.870222017115!2d-43.25735892374452!3d-22.861403936252504!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997c0081a3d0db%3A0x4862f5196590aada!2sCondom%C3%ADnio%20Vila%20Bonsucesso%20-%20Rua%20Cardoso%20de%20Morais%2C%20224%20-%20Bonsucesso%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2021032-025!5e1!3m2!1spt-BR!2sbr!4v1770000623266!5m2!1spt-BR!2sbr',
 
   results: {
     patient: '',
     doctor: '',
   },
 };
+
 
 export const services = [
   {
