@@ -8,12 +8,13 @@ import LocationSection from '@/components/sections/LocationSection';
 import CTASection from '@/components/sections/CTASection';
 import WhatsAppButton from '@/components/ui/WhatsAppButton';
 
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-slate-100">
       <Header />
+      <HeroSection />
       <main>
-        <HeroSection />
         <ServicesSection />
         <AboutSection />
         <TestimonialsSection />

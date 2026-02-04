@@ -5,14 +5,14 @@ export const siteConfig = {
   whatsapp: '5521967664756', 
   
   contact: {
-    phone: '(21)96766-4756',
+    phone: '(21) 3437-8274',
     email: 'contato@clinicavidaplena.com.br',
     address: {
       street: 'Rua Cardoso de Morais 224',
       neighborhood: 'Bonsucesso',
       city: 'Rio de Janeiro',
       state: 'RJ',
-      zip: '21032-025',
+      zip: '21032-000',
     },
   },
 
@@ -103,3 +103,65 @@ export const testimonials = [
     rating: 5,
   },
 ];
+
+export const bannerSlides = [
+  {
+    id: 1,
+    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1920&h=600&fit=crop',
+    alt: 'Banner 1 - Laboratório moderno',
+    title: 'Exames com Qualidade',
+    subtitle: 'Tecnologia de ponta para resultados precisos',
+  },
+  {
+    id: 2,
+    image: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?w=1920&h=600&fit=crop',
+    alt: 'Banner 2 - Equipe profissional',
+    title: 'Equipe Especializada',
+    subtitle: 'Profissionais experientes ao seu dispor',
+  },
+  {
+    id: 3,
+    image: 'https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=1920&h=600&fit=crop',
+    alt: 'Banner 3 - Atendimento',
+    title: 'Atendimento Rápido',
+    subtitle: 'Agende seu exame pelo WhatsApp',
+  },
+];
+
+// CONFIGURAÇÕES DO CARROSSEL
+export const carouselConfig = {
+  autoPlayInterval: 5000,    // Tempo em milissegundos (5000 = 5 segundos)
+  showControls: true,        // Mostrar setas de navegação
+  showIndicators: true,      // Mostrar bolinhas indicadoras
+};
+
+// HERO SECTION CONFIG
+export const heroSlides = [
+  {
+    id: 1,
+    image: 'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=800&h=1000&fit=crop',
+    alt: 'Profissional de saúde',
+    title: 'Exames com Precisão',
+    subtitle: 'Resultados confiáveis e rápidos',
+  },
+  {
+    id: 2,
+    image: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?w=800&h=1000&fit=crop',
+    alt: 'Equipe especializada',
+    title: 'Equipe Especializada',
+    subtitle: 'Cuidado humano e profissional',
+  },
+  {
+    id: 3,
+    image: 'https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=800&h=1000&fit=crop',
+    alt: 'Atendimento humanizado',
+    title: 'Atendimento Ágil',
+    subtitle: 'Agende seus exames pelo WhatsApp',
+  },
+];
+
+export const heroCarouselConfig = {
+  autoPlayInterval: 4500,
+  showControls: true,
+  showIndicators: true,
+};
