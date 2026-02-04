@@ -8,7 +8,7 @@ export default function CTASection() {
           Pronto para cuidar da sua saúde?
         </h2>
         <p className="text-lg sm:text-xl text-primary-100 mb-8">
-          Agende sua consulta pelo WhatsApp e seja atendido com excelência
+          Agende seu exame pelo WhatsApp e seja atendido com excelência
         </p>
         <WhatsAppButton 
           variant="primary" 

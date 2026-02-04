@@ -1,4 +1,5 @@
 'use client';
+
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { Menu, X, Heart } from 'lucide-react';
@@ -13,6 +14,7 @@ export default function Header() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -22,13 +24,19 @@ export default function Header() {
     { label: 'Sobre', href: '#about' },
     { label: 'Depoimentos', href: '#testimonials' },
     { label: 'Localização', href: '#location' },
-    { label: 'Resultados', href: 'https://portal.worklabweb.com.br/resultados-on-line/2317' },
+    {
+      label: 'Resultados',
+      href: 'https://portal.worklabweb.com.br/resultados-on-line/2317',
+      external: true,
+    },
   ];
 
   return (
-    <header 
+    <header
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white/95 backdrop-blur-md shadow-lg' : 'bg-transparent'
+        isScrolled
+          ? 'bg-white/95 backdrop-blur-md shadow-lg'
+          : 'bg-transparent'
       }`}
     >
       <nav className="container mx-auto px-4 sm:px-6 py-4">
@@ -45,17 +53,27 @@ export default function Header() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            {menuItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="text-slate-700 hover:text-primary-600 transition-colors font-medium"
-              >
-                {item.label}
-              </a>
-            ))}
-            
-            {/* Dropdown Resultados */}
+            {menuItems.map((item) =>
+              item.external ? (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-slate-700 hover:text-primary-600 transition-colors font-medium"
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  className="text-slate-700 hover:text-primary-600 transition-colors font-medium"
+                >
+                  {item.label}
+                </a>
+              )
+            )}
 
             <WhatsAppButton variant="primary" className="px-6 py-2.5 text-base">
               Agendar
@@ -63,7 +81,7 @@ export default function Header() {
           </div>
 
           {/* Mobile Menu Button */}
-          <button 
+          <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden text-slate-700 hover:text-primary-600 transition-colors"
           >
@@ -75,39 +93,29 @@ export default function Header() {
         {isMenuOpen && (
           <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-xl mt-2 rounded-b-2xl animate-fadeIn">
             <div className="flex flex-col space-y-4 p-6">
-              {menuItems.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setIsMenuOpen(false)}
-                  className="text-slate-700 hover:text-primary-600 transition-colors font-medium"
-                >
-                  {item.label}
-                </a>
-              ))}
-              
-              {/* Resultados no Mobile */}
-              <div className="border-t border-slate-200 pt-4">
-                <p className="text-xs font-semibold text-slate-500 uppercase mb-2">Resultados</p>
-                <a
-                  href={siteConfig.results.patient}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="block py-2 text-slate-700 hover:text-primary-600 transition-colors font-medium pl-4"
-                >
-                  Paciente
-                </a>
-                <a
-                  href={siteConfig.results.doctor}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="block py-2 text-slate-700 hover:text-primary-600 transition-colors font-medium pl-4"
-                >
-                  Médico
-                </a>
-              </div>
+              {menuItems.map((item) =>
+                item.external ? (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="text-slate-700 hover:text-primary-600 transition-colors font-medium"
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="text-slate-700 hover:text-primary-600 transition-colors font-medium"
+                  >
+                    {item.label}
+                  </a>
+                )
+              )}
 
               <WhatsAppButton variant="primary" className="w-full">
                 Agendar Consulta

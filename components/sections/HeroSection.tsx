@@ -37,27 +37,8 @@ export default function HeroSection() {
 
             <div className="grid grid-cols-3 gap-4 pt-8 border-t border-slate-200">
               <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-primary-600">
-                  {siteConfig.stats.years}
-                </div>
-                <div className="text-xs sm:text-sm text-slate-600">Anos</div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-primary-600">
-                  {siteConfig.stats.patients}
-                </div>
-                <div className="text-xs sm:text-sm text-slate-600">
-                  Pacientes
-                </div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-primary-600">
-                  {siteConfig.stats.satisfaction}
-                </div>
-                <div className="text-xs sm:text-sm text-slate-600">
-                  Satisfação
-                </div>
-              </div>
+              <div className="text-center"></div>
             </div>
           </div>
 
