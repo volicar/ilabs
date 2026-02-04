@@ -17,8 +17,8 @@ export const siteConfig = {
   },
 
   hours: {
-    weekday: 'Segunda a Sexta: 7h às 19h',
-    saturday: 'Sábado: 8h às 13h',
+    weekday: 'Segunda a Sexta: 7h às 17h',
+    saturday: 'Sábado: 7h às 12h',
     sunday: 'Domingo e Feriados: Fechado',
   },
 
@@ -47,39 +47,39 @@ export const siteConfig = {
 export const services = [
   {
     id: 1,
-    title: 'Clínica Geral',
-    description: 'Atendimento completo para toda a família com profissionais experientes.',
+    title: 'Exames Laboratoriais',
+    description: 'Hemograma completo, Glicose, Lipidograma, Hormônios em geral, exames de urina, fezes, análise de preventivo, biópsias e muitos outros exames.',
     icon: '👨‍⚕️',
   },
   {
     id: 2,
-    title: 'Pediatria',
-    description: 'Cuidado especializado para a saúde e desenvolvimento do seu filho.',
-    icon: '👶',
+    title: 'Coleta Domiciliar',
+    description: 'Realize seus exames no conforto da sua casa.',
+    icon: '💉🏠',
   },
   {
     id: 3,
-    title: 'Cardiologia',
-    description: 'Prevenção e tratamento de doenças cardiovasculares com tecnologia avançada.',
-    icon: '❤️',
+    title: 'Teste de Paternidade',
+    description: 'Resultados seguros e precisos em até 10 dias úteis.',
+    icon: '🧬',
   },
   {
     id: 4,
-    title: 'Dermatologia',
-    description: 'Tratamentos estéticos e clínicos para saúde da sua pele.',
-    icon: '✨',
+    title: 'Sexagem Fetal',
+    description: 'Descubra o sexo do seu bebê a partir de 8 semanas de gestação.',
+    icon: '👶',
   },
   {
     id: 5,
-    title: 'Ortopedia',
-    description: 'Diagnóstico e tratamento de problemas ósseos e articulares.',
-    icon: '🦴',
+    title: 'Toxicológico para Detran, Concursos e CLT',
+    description: 'Exame realizado para identificar o uso de drogas nos últimos 90 dias.',
+    icon: '🔬',
   },
   {
     id: 6,
-    title: 'Check-up Executivo',
-    description: 'Avaliação completa da saúde com resultados rápidos e precisos.',
-    icon: '📊',
+    title: 'Vacinação',
+    description: 'Excelência em imunização, previna-se contra diversos tipos de doenças.',
+    icon: '💉',
   },
 ];
 
@@ -165,3 +165,5 @@ export const heroCarouselConfig = {
   showControls: true,
   showIndicators: true,
 };
+
+

@@ -1,23 +1,26 @@
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle } from "lucide-react";
 
 export default function AboutSection() {
   const features = [
     {
-      title: 'Equipe Multidisciplinar',
-      description: 'Mais de 20 especialistas ao seu dispor',
+      title: "Atendimento humanizado",
+      description: "",
     },
     {
-      title: 'Tecnologia de Ponta',
-      description: 'Equipamentos modernos e diagnósticos precisos',
+      title: "Resultados rápidos e seguros.",
+      description: "",
     },
     {
-      title: 'Convênios Aceitos',
-      description: 'Trabalhamos com os principais planos de saúde',
+      title: "Preços acessíveis",
+      description: "",
     },
   ];
 
   return (
-    <section id="about" className="py-20 px-4 sm:px-6 bg-gradient-to-br from-primary-600 to-primary-400 text-white">
+    <section
+      id="about"
+      className="py-20 px-4 sm:px-6 bg-gradient-to-br from-primary-600 to-primary-400 text-white"
+    >
       <div className="container mx-auto">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
@@ -28,8 +31,9 @@ export default function AboutSection() {
               Tradição e inovação em saúde
             </h2>
             <p className="text-base sm:text-lg text-primary-50 leading-relaxed">
-              Há mais de 16 anos cuidando da saúde da sua família. Nossa clínica é referência 
-              em atendimento médico de qualidade, combinando tradição, tecnologia e humanização.
+              O iLabs Laboratório nasceu para cuidar de pessoas. Mais do que
+              resultados, entregamos confiança, acolhimento e a tranquilidade de
+              estar em boas mãos.
             </p>
             <div className="space-y-4">
               {features.map((feature, index) => (
@@ -38,8 +42,12 @@ export default function AboutSection() {
                     <CheckCircle className="text-white" size={16} />
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-1 text-sm sm:text-base">{feature.title}</h4>
-                    <p className="text-sm sm:text-base text-primary-50">{feature.description}</p>
+                    <h4 className="font-semibold mb-1 text-sm sm:text-base">
+                      {feature.title}
+                    </h4>
+                    <p className="text-sm sm:text-base text-primary-50">
+                      {feature.description}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -47,7 +55,7 @@ export default function AboutSection() {
           </div>
           <div className="relative">
             <div className="absolute inset-0 bg-white/10 rounded-3xl -rotate-3"></div>
-            <img 
+            <img
               src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&h=600&fit=crop"
               alt="Equipe médica"
               className="relative rounded-3xl shadow-2xl w-full h-[350px] sm:h-[400px] object-cover"
