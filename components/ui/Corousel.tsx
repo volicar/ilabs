@@ -2,43 +2,52 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { heroSlides, heroCarouselConfig } from '@/lib/config';
+
+type CarouselProps<T> = {
+  items: T[];
+  renderItem: (item: T) => React.ReactNode;
+  autoPlayInterval?: number;
+  showControls?: boolean;
+  showIndicators?: boolean;
+  className?: string;
+};
 
 const swipeConfidenceThreshold = 100;
 const swipePower = (offset: number, velocity: number) =>
   Math.abs(offset) * velocity;
 
-export default function HeroCarousel() {
+export default function Carousel<T>({
+  items,
+  renderItem,
+  autoPlayInterval,
+  showControls = true,
+  showIndicators = true,
+  className = '',
+}: CarouselProps<T>) {
   const [[current, direction], setCurrent] = useState<[number, number]>([0, 0]);
-
-  useEffect(() => {
-    if (!heroCarouselConfig.autoPlayInterval) return;
-
-    const interval = setInterval(() => {
-      paginate(1);
-    }, heroCarouselConfig.autoPlayInterval);
-
-    return () => clearInterval(interval);
-  }, [current]);
 
   const paginate = (newDirection: number) => {
     setCurrent(([prev]) => {
-      const next = (prev + newDirection + heroSlides.length) % heroSlides.length;
+      const next = (prev + newDirection + items.length) % items.length;
       return [next, newDirection];
     });
   };
 
-  const slide = heroSlides[current];
+  useEffect(() => {
+    if (!autoPlayInterval) return;
+
+    const interval = setInterval(() => {
+      paginate(1);
+    }, autoPlayInterval);
+
+    return () => clearInterval(interval);
+  }, [current, autoPlayInterval]);
 
   return (
-    <div className="relative rounded-3xl overflow-hidden shadow-2xl h-[400px] sm:h-[500px] group">
+    <div className={`relative overflow-hidden ${className}`}>
       <AnimatePresence initial={false} custom={direction}>
-        <motion.img
-          key={slide.id}
-          src={slide.image}
-          alt={slide.alt}
-          className="absolute w-full h-full object-cover select-none"
-          draggable={false}
+        <motion.div
+          key={current}
           custom={direction}
           initial={{ x: direction > 0 ? 300 : -300, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
@@ -53,27 +62,17 @@ export default function HeroCarousel() {
           onDragEnd={(_, { offset, velocity }) => {
             const swipe = swipePower(offset.x, velocity.x);
 
-            if (swipe < -swipeConfidenceThreshold) {
-              paginate(1);
-            } else if (swipe > swipeConfidenceThreshold) {
-              paginate(-1);
-            }
+            if (swipe < -swipeConfidenceThreshold) paginate(1);
+            if (swipe > swipeConfidenceThreshold) paginate(-1);
           }}
-        />
+          className="absolute inset-0"
+        >
+          {renderItem(items[current])}
+        </motion.div>
       </AnimatePresence>
 
-      {/* OVERLAY */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex flex-col justify-end p-6 sm:p-8 pointer-events-none">
-        <h3 className="text-white text-2xl sm:text-3xl font-bold">
-          {slide.title}
-        </h3>
-        <p className="text-white/90 text-sm sm:text-base">
-          {slide.subtitle}
-        </p>
-      </div>
-
-      {/* SETAS */}
-      {heroCarouselConfig.showControls && (
+      {/* CONTROLES */}
+      {showControls && items.length > 1 && (
         <>
           <button
             onClick={() => paginate(-1)}
@@ -96,12 +95,14 @@ export default function HeroCarousel() {
       )}
 
       {/* INDICADORES */}
-      {heroCarouselConfig.showIndicators && (
+      {showIndicators && items.length > 1 && (
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-          {heroSlides.map((slide, index) => (
+          {items.map((_, index) => (
             <button
-              key={slide.id}
-              onClick={() => setCurrent([index, index > current ? 1 : -1])}
+              key={index}
+              onClick={() =>
+                setCurrent([index, index > current ? 1 : -1])
+              }
               className={`h-2 w-2 rounded-full transition ${
                 index === current
                   ? 'bg-primary-500'
