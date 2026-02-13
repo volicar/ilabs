@@ -1,78 +1,72 @@
-import { MapPin } from 'lucide-react';
-import WhatsAppButton from '@/components/ui/WhatsAppButton';
+import { MapPin, MessageCircle } from 'lucide-react';
+import { createWhatsAppLink } from '@/lib/utils';
 
 export default function NeighborhoodsSection() {
   const neighborhoods = [
     { name: 'Bonsucesso', isMain: true },
-    { name: 'Campo Grande', isMain: false },
     { name: 'Bangu', isMain: false },
+    { name: 'Campo Grande', isMain: false },
+    { name: 'Centro', isMain: false },
     { name: 'Madureira', isMain: false },
     { name: 'Tijuca', isMain: false },
-    { name: 'Centro', isMain: false },
     { name: 'Taquara', isMain: false },
   ];
 
   return (
-    <section id="bairros" className="py-20 px-4 sm:px-6 bg-white">
+    <section id="bairros" className="py-12 px-4 sm:px-6 bg-slate-50">
       <div className="container mx-auto">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <span className="bg-primary-100 text-primary-700 px-4 py-2 rounded-full text-sm font-semibold">
-            Cobertura
-          </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-sans font-bold text-slate-900 mt-4 mb-4">
+        <div className="text-center max-w-2xl mx-auto mb-8">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-sans font-bold text-slate-900 mb-3">
             Atendemos em diversos bairros
           </h2>
-          <p className="text-base sm:text-lg text-slate-600">
-            Estamos prontos para atender você com qualidade e agilidade
+          <p className="text-sm sm:text-base text-slate-600">
+            Clique no seu bairro para saber dias, horários e endereço
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 mb-12">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto">
           {neighborhoods.map((neighborhood, index) => (
-            <div
+            <a
               key={index}
-              className={`relative p-6 rounded-2xl text-center transition-all duration-300 hover:-translate-y-2 hover:shadow-xl ${
+              href={createWhatsAppLink(`Gostaria de atendimento em ${neighborhood.name}`)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`group relative p-4 rounded-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${
                 neighborhood.isMain
-                  ? 'bg-gradient-to-br from-primary-600 to-primary-500 text-white shadow-lg'
-                  : 'bg-gradient-to-br from-slate-50 to-primary-50 border border-slate-200'
+                  ? 'bg-gradient-to-br from-primary-600 to-primary-500 text-white shadow-md'
+                  : 'bg-white border-2 border-slate-200 hover:border-primary-300'
               }`}
             >
-              <div className={`w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center ${
-                neighborhood.isMain ? 'bg-white/20' : 'bg-primary-100'
-              }`}>
-                <MapPin 
-                  size={24} 
-                  className={neighborhood.isMain ? 'text-white' : 'text-primary-600'}
-                />
-              </div>
-              <h3 className={`font-bold text-base sm:text-lg ${
-                neighborhood.isMain ? 'text-white' : 'text-slate-900'
-              }`}>
-                {neighborhood.name}
-              </h3>
-              {neighborhood.isMain && (
-                <span className="inline-block mt-2 text-xs bg-white/20 px-3 py-1 rounded-full">
-                  Unidade Principal
-                </span>
-              )}
-            </div>
-          ))}
-        </div>
+              <div className="flex flex-col items-center text-center space-y-2">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                  neighborhood.isMain ? 'bg-white/20' : 'bg-primary-100 group-hover:bg-primary-200'
+                }`}>
+                  <MapPin 
+                    size={20} 
+                    className={neighborhood.isMain ? 'text-white' : 'text-primary-600'}
+                  />
+                </div>
+                
+                <div>
+                  <h3 className={`font-bold text-sm ${
+                    neighborhood.isMain ? 'text-white' : 'text-slate-900'
+                  }`}>
+                    {neighborhood.name}
+                  </h3>
+                  {neighborhood.isMain && (
+                    <span className="text-[10px] text-white/80">Principal</span>
+                  )}
+                </div>
 
-        {/* CTA */}
-        <div className="text-center bg-gradient-to-br from-slate-50 to-primary-50 rounded-2xl p-8 sm:p-12">
-          <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
-            Precisa agendar em outro bairro?
-          </h3>
-          <p className="text-base sm:text-lg text-slate-600 mb-6 max-w-2xl mx-auto">
-            Entre em contato conosco pelo WhatsApp e verifique a disponibilidade de atendimento na sua região
-          </p>
-          <WhatsAppButton 
-            variant="primary" 
-            className="px-8 sm:px-10 py-4 sm:py-5 text-base sm:text-lg"
-          >
-            Consultar Disponibilidade
-          </WhatsAppButton>
+                <div className={`flex items-center space-x-1 text-xs font-medium ${
+                  neighborhood.isMain ? 'text-white/90' : 'text-primary-600'
+                }`}>
+                  <MessageCircle size={14} />
+                  <span>Consultar</span>
+                </div>
+              </div>
+            </a>
+          ))}
         </div>
       </div>
     </section>

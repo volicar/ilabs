@@ -23,7 +23,7 @@ export default function Header() {
     { label: 'Serviços', href: '#servicos' },
     { label: 'Sobre', href: '#sobre' },
     { label: 'Depoimentos', href: '#depoimentos' },
-    { label: 'Bairros', href: '#bairros' },
+    { label: 'Bairros', href: '#bairros' }, 
     { label: 'Localização', href: '#localizacao' },
     {
       label: 'Resultados',
