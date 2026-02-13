@@ -12,12 +12,12 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: `${siteConfig.name} - ${siteConfig.description}`,
-  description: `Clínica médica completa em ${siteConfig.contact.address.city}. Atendimento especializado com mais de 16 anos de experiência. Agende sua consulta pelo WhatsApp!`,
-  keywords: 'clínica médica, clínica geral, pediatria, cardiologia, dermatologia, ortopedia, check-up, são paulo, atendimento médico',
+  description: `Laboratório de análises clínicas em ${siteConfig.contact.address.city}. Exames laboratoriais com qualidade e precisão. Resultados rápidos e confiáveis!`,
+  keywords: 'laboratório, exames laboratoriais, análises clínicas, exames de sangue, check-up, hemograma, urina, fezes, exames de imagem, coleta domiciliar, rio de janeiro, bonsucesso',
   authors: [{ name: siteConfig.name }],
   openGraph: {
     title: `${siteConfig.name} - ${siteConfig.description}`,
-    description: 'Atendimento médico de excelência. Agende pelo WhatsApp!',
+    description: 'Laboratório de análises clínicas com exames precisos e resultados rápidos!',
     type: 'website',
   },
 };

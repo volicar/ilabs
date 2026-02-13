@@ -4,6 +4,7 @@ import HeroSection from '@/components/sections/HeroSection';
 import ServicesSection from '@/components/sections/ServicesSection';
 import AboutSection from '@/components/sections/AboutSection';
 import TestimonialsSection from '@/components/sections/TestimonialsSection';
+import NeighborhoodsSection from '@/components/sections/NeighborhoodsSection'
 import LocationSection from '@/components/sections/LocationSection';
 import CTASection from '@/components/sections/CTASection';
 import WhatsAppButton from '@/components/ui/WhatsAppButton';
@@ -18,6 +19,7 @@ export default function Home() {
         <ServicesSection />
         <AboutSection />
         <TestimonialsSection />
+        <NeighborhoodsSection /> 
         <LocationSection />
         <CTASection />
       </main>

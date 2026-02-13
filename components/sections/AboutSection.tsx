@@ -18,7 +18,7 @@ export default function AboutSection() {
 
   return (
     <section
-      id="about"
+      id="sobre"
       className="py-20 px-4 sm:px-6 bg-gradient-to-br from-primary-600 to-primary-400 text-white"
     >
       <div className="container mx-auto">

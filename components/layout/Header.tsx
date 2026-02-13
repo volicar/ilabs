@@ -20,10 +20,11 @@ export default function Header() {
   }, []);
 
   const menuItems = [
-    { label: 'Serviços', href: '#services' },
-    { label: 'Sobre', href: '#about' },
-    { label: 'Depoimentos', href: '#testimonials' },
-    { label: 'Localização', href: '#location' },
+    { label: 'Serviços', href: '#servicos' },
+    { label: 'Sobre', href: '#sobre' },
+    { label: 'Depoimentos', href: '#depoimentos' },
+    { label: 'Bairros', href: '#bairros' },
+    { label: 'Localização', href: '#localizacao' },
     {
       label: 'Resultados',
       href: 'https://portal.worklabweb.com.br/resultados-on-line/2317',
