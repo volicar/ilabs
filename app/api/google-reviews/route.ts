@@ -1,23 +1,41 @@
+// app/api/google-reviews/route.ts
+
 import { NextResponse } from 'next/server';
 
-const PLACE_ID = process.env.GOOGLE_PLACE_ID!;
-const API_KEY = process.env.GOOGLE_API_KEY!;
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const placeId = searchParams.get('placeId');
+  
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY;
 
-export async function GET() {
-  const res = await fetch(
-    `https://maps.googleapis.com/maps/api/place/details/json?place_id=${PLACE_ID}&fields=name,rating,reviews,user_ratings_total&language=pt-BR&key=${API_KEY}`,
-    { next: { revalidate: 86400 } } // cache 24h
-  );
+  if (!apiKey || !placeId) {
+    return NextResponse.json(
+      { error: 'API Key ou Place ID não configurados' },
+      { status: 400 }
+    );
+  }
 
-  const data = await res.json();
+  try {
+    const response = await fetch(
+      `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=reviews&key=${apiKey}&language=pt-BR`
+    );
 
-  const reviews =
-    data.result?.reviews?.map((r: any) => ({
-      id: r.time,
-      author: r.author_name,
-      text: r.text,
-      rating: r.rating,
-    })) || [];
+    const data = await response.json();
 
-  return NextResponse.json(reviews);
+    if (data.status === 'OK') {
+      return NextResponse.json({
+        reviews: data.result.reviews || [],
+      });
+    } else {
+      return NextResponse.json(
+        { error: 'Erro ao buscar reviews', details: data },
+        { status: 500 }
+      );
+    }
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Erro ao conectar com Google Places API' },
+      { status: 500 }
+    );
+  }
 }
