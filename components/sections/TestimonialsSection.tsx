@@ -3,7 +3,7 @@ import TestimonialCard from '@/components/ui/TestimonialCard';
 
 export default function TestimonialsSection() {
   return (
-    <section id="testimonials" className="py-20 px-4 sm:px-6 bg-slate-50">
+    <section id="depoimentos" className="py-20 px-4 sm:px-6 bg-slate-50">
       <div className="container mx-auto">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <span className="bg-primary-100 text-primary-700 px-4 py-2 rounded-full text-sm font-semibold">
