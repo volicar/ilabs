@@ -35,17 +35,16 @@ export const metadata: Metadata = {
   creator: siteConfig.name,
   publisher: siteConfig.name,
   
-  // Open Graph (Facebook, WhatsApp)
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
-    url: 'https://www.ilabslaboratorio.com.br', // ← MUDE PARA SEU DOMÍNIO
+    url: 'https://ilabslaboratorio.com.br',
     siteName: siteConfig.name,
     title: `${siteConfig.name} - Laboratório de Análises Clínicas`,
     description: 'Exames laboratoriais com qualidade e precisão. Resultados rápidos e confiáveis.',
     images: [
       {
-        url: '/images/og-image.jpg', // ← Adicione uma imagem 1200x630px
+        url: '/images/og-image.jpg',
         width: 1200,
         height: 630,
         alt: `${siteConfig.name} - Laboratório`,
@@ -53,7 +52,6 @@ export const metadata: Metadata = {
     ],
   },
   
-  // Twitter
   twitter: {
     card: 'summary_large_image',
     title: `${siteConfig.name} - Laboratório de Análises Clínicas`,
@@ -61,22 +59,18 @@ export const metadata: Metadata = {
     images: ['/images/og-image.jpg'],
   },
   
- // Verificação
-verification: {
-  google: 'V79RLPSTXl9Yc4B8MtnpocBK-aKAEMxXbSNI4QjtDs4',
-},
-
-// Dados estruturados
-other: {
-  'google-site-verification': 'V79RLPSTXl9Yc4B8MtnpocBK-aKAEMxXbSNI4QjtDs4',
-},
-
-  // Canonical URL
-  alternates: {
-    canonical: 'https://www.ilabslaboratorio.com.br', // ← MUDE PARA SEU DOMÍNIO
+  verification: {
+    google: 'V79RLPSTXl9Yc4B8MtnpocBK-aKAEMxXbSNI4QjtDs4',
+  },
+  
+  other: {
+    'google-site-verification': 'V79RLPSTXl9Yc4B8MtnpocBK-aKAEMxXbSNI4QjtDs4',
   },
 
-  // Robots
+  alternates: {
+    canonical: 'https://ilabslaboratorio.com.br',
+  },
+
   robots: {
     index: true,
     follow: true,
@@ -100,6 +94,9 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧬</text></svg>" />
         
+        {/* Verificação Google - Tag HTML */}
+        <meta name="google-site-verification" content="V79RLPSTXl9Yc4B8MtnpocBK-aKAEMxXbSNI4QjtDs4" />
+        
         {/* Schema.org - Dados Estruturados */}
         <script
           type="application/ld+json"
@@ -108,9 +105,9 @@ export default function RootLayout({
               '@context': 'https://schema.org',
               '@type': 'MedicalBusiness',
               name: siteConfig.name,
-              image: 'https://www.ilabslaboratorio.com.br/images/logo.jpg',
-              '@id': 'https://www.ilabslaboratorio.com.br',
-              url: 'https://www.ilabslaboratorio.com.br',
+              image: 'https://ilabslaboratorio.com.br/images/logo.jpg',
+              '@id': 'https://ilabslaboratorio.com.br',
+              url: 'https://ilabslaboratorio.com.br',
               telephone: siteConfig.contact.phone,
               address: {
                 '@type': 'PostalAddress',
@@ -122,7 +119,7 @@ export default function RootLayout({
               },
               geo: {
                 '@type': 'GeoCoordinates',
-                latitude: -22.861409, // ← Coordenadas do laboratório
+                latitude: -22.861409,
                 longitude: -43.254784,
               },
               openingHoursSpecification: [
