@@ -61,17 +61,15 @@ export const metadata: Metadata = {
     images: ['/images/og-image.jpg'],
   },
   
-  // Verificação
-  verification: {
-    google: 'V79RLPSTXl9Yc4B8MtnpocBK-aKAEMxXbSNI4QjtDs4', // ← Google Search Console
-    // yandex: 'seu_codigo_yandex',
-    // bing: 'seu_codigo_bing',
-  },
-  
-  // Dados estruturados
-  other: {
-    'google-site-verification': 'COLE_SEU_CODIGO_GOOGLE_AQUI',
-  },
+ // Verificação
+verification: {
+  google: 'V79RLPSTXl9Yc4B8MtnpocBK-aKAEMxXbSNI4QjtDs4',
+},
+
+// Dados estruturados
+other: {
+  'google-site-verification': 'V79RLPSTXl9Yc4B8MtnpocBK-aKAEMxXbSNI4QjtDs4',
+},
 
   // Canonical URL
   alternates: {
