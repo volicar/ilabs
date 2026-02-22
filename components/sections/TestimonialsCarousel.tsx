@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Star, ChevronLeft, ChevronRight, Quote } from 'lucide-react';
 
 interface Testimonial {
@@ -8,13 +8,13 @@ interface Testimonial {
   name: string;
   text: string;
   rating: number;
-  photo?: string; // URL da foto (opcional)
-  date?: string;  // Data da avaliação (opcional)
+  photo?: string;
+  date?: string;
 }
 
 interface TestimonialsCarouselProps {
   testimonials: Testimonial[];
-  autoPlayInterval?: number; // em milissegundos (padrão: 5000)
+  autoPlayInterval?: number;
 }
 
 export default function TestimonialsCarousel({
@@ -23,6 +23,9 @@ export default function TestimonialsCarousel({
 }: TestimonialsCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % testimonials.length);
@@ -36,7 +39,31 @@ export default function TestimonialsCarousel({
     setCurrentIndex(index);
   };
 
-  // Auto-play
+  // Swipe Mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current === null || touchEndX.current === null) return;
+
+    const distance = touchStartX.current - touchEndX.current;
+    const minSwipeDistance = 50;
+
+    if (distance > minSwipeDistance) {
+      nextSlide(); // swipe esquerda
+    } else if (distance < -minSwipeDistance) {
+      prevSlide(); // swipe direita
+    }
+
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
+
   useEffect(() => {
     if (!isHovered && testimonials.length > 1) {
       const interval = setInterval(nextSlide, autoPlayInterval);
@@ -66,10 +93,14 @@ export default function TestimonialsCarousel({
           </p>
         </div>
 
-        {/* Carrossel */}
         <div className="relative max-w-4xl mx-auto">
-          <div className="relative bg-white rounded-3xl shadow-2xl p-8 sm:p-12 min-h-[400px] sm:min-h-[350px]">
-            {/* Ícone de aspas */}
+          <div
+            className="relative bg-white rounded-3xl shadow-2xl p-8 sm:p-12 min-h-[400px] sm:min-h-[350px]"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            {/* Ícone aspas */}
             <div className="absolute top-6 left-6 text-primary-200">
               <Quote size={48} fill="currentColor" />
             </div>
@@ -78,10 +109,11 @@ export default function TestimonialsCarousel({
               <div
                 key={testimonial.id}
                 className={`transition-opacity duration-500 ${
-                  index === currentIndex ? 'opacity-100' : 'opacity-0 absolute inset-0 pointer-events-none'
+                  index === currentIndex
+                    ? 'opacity-100'
+                    : 'opacity-0 absolute inset-0 pointer-events-none'
                 }`}
               >
-                {/* Conteúdo do depoimento */}
                 <div className="flex flex-col items-center text-center pt-8">
                   {/* Foto */}
                   {testimonial.photo ? (
@@ -101,7 +133,11 @@ export default function TestimonialsCarousel({
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
-                        className={i < testimonial.rating ? 'text-yellow-400' : 'text-slate-300'}
+                        className={
+                          i < testimonial.rating
+                            ? 'text-yellow-400'
+                            : 'text-slate-300'
+                        }
                         size={24}
                         fill={i < testimonial.rating ? 'currentColor' : 'none'}
                       />
@@ -119,26 +155,29 @@ export default function TestimonialsCarousel({
                       {testimonial.name}
                     </h4>
                     {testimonial.date && (
-                      <p className="text-slate-500 text-sm mt-1">{testimonial.date}</p>
+                      <p className="text-slate-500 text-sm mt-1">
+                        {testimonial.date}
+                      </p>
                     )}
                   </div>
                 </div>
               </div>
             ))}
 
-            {/* Controles de navegação */}
+            {/* Setas (somente desktop) */}
             {testimonials.length > 1 && (
               <>
                 <button
                   onClick={prevSlide}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-white hover:bg-primary-100 text-primary-600 p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
+                  className="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 bg-white hover:bg-primary-100 text-primary-600 p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10 items-center justify-center"
                   aria-label="Depoimento anterior"
                 >
                   <ChevronLeft size={24} />
                 </button>
+
                 <button
                   onClick={nextSlide}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-white hover:bg-primary-100 text-primary-600 p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
+                  className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 bg-white hover:bg-primary-100 text-primary-600 p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10 items-center justify-center"
                   aria-label="Próximo depoimento"
                 >
                   <ChevronRight size={24} />
@@ -166,7 +205,7 @@ export default function TestimonialsCarousel({
           )}
         </div>
 
-        {/* Link para Google */}
+        {/* Link Google */}
         <div className="text-center mt-8">
           <a
             href="https://www.google.com/maps/search/?api=1&query=iLABS+Laboratorio+Bonsucesso"
