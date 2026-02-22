@@ -31,25 +31,24 @@ export default function HeroCarousel() {
   const slide = heroSlides[current];
 
   return (
-    <div className="relative rounded-3xl overflow-hidden shadow-2xl h-[400px] sm:h-[500px] group">
+    <div className="relative rounded-3xl overflow-hidden shadow-2xl h-[400px] sm:h-[500px] group isolate">
       <AnimatePresence initial={false} custom={direction}>
         <motion.img
           key={slide.id}
           src={slide.image}
           alt={slide.alt}
-          className="absolute w-full h-full object-cover select-none"
+          className="absolute inset-0 w-full h-full object-cover select-none"
           draggable={false}
           custom={direction}
-          initial={{ x: direction > 0 ? 300 : -300, opacity: 0 }}
+          initial={{ x: direction > 0 ? '100%' : '-100%', opacity: 1 }}
           animate={{ x: 0, opacity: 1 }}
-          exit={{ x: direction > 0 ? -300 : 300, opacity: 0 }}
+          exit={{ x: direction > 0 ? '-100%' : '100%', opacity: 1 }}
           transition={{
-            x: { type: 'spring', stiffness: 300, damping: 30 },
-            opacity: { duration: 0.2 },
+            x: { duration: 0.7, ease: 'easeInOut' },
           }}
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0.8}
+          dragElastic={0.6}
           onDragEnd={(_, { offset, velocity }) => {
             const swipe = swipePower(offset.x, velocity.x);
 
@@ -98,10 +97,12 @@ export default function HeroCarousel() {
       {/* INDICADORES */}
       {heroCarouselConfig.showIndicators && (
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-          {heroSlides.map((slide, index) => (
+          {heroSlides.map((slideItem, index) => (
             <button
-              key={slide.id}
-              onClick={() => setCurrent([index, index > current ? 1 : -1])}
+              key={slideItem.id}
+              onClick={() =>
+                setCurrent([index, index > current ? 1 : -1])
+              }
               className={`h-2 w-2 rounded-full transition ${
                 index === current
                   ? 'bg-primary-500'

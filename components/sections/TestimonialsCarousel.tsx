@@ -12,7 +12,7 @@ interface Testimonial {
   date?: string;
 }
 
-interface TestimonialsCarouselProps {
+interface Props {
   testimonials: Testimonial[];
   autoPlayInterval?: number;
 }
@@ -20,58 +20,76 @@ interface TestimonialsCarouselProps {
 export default function TestimonialsCarousel({
   testimonials,
   autoPlayInterval = 5000,
-}: TestimonialsCarouselProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+}: Props) {
+  const [currentIndex, setCurrentIndex] = useState(1);
   const [isHovered, setIsHovered] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(true);
 
-  const touchStartX = useRef<number | null>(null);
-  const touchEndX = useRef<number | null>(null);
+  const startX = useRef<number | null>(null);
+  const currentTranslate = useRef(0);
 
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-  };
+  if (!testimonials || testimonials.length === 0) return null;
 
-  const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  };
+  // 🔥 Loop infinito (clones)
+  const slides = [
+    testimonials[testimonials.length - 1],
+    ...testimonials,
+    testimonials[0],
+  ];
 
-  const goToSlide = (index: number) => {
-    setCurrentIndex(index);
-  };
+  const nextSlide = () => setCurrentIndex((prev) => prev + 1);
+  const prevSlide = () => setCurrentIndex((prev) => prev - 1);
 
-  // Swipe Mobile
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.targetTouches[0].clientX;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    touchEndX.current = e.targetTouches[0].clientX;
-  };
-
-  const handleTouchEnd = () => {
-    if (touchStartX.current === null || touchEndX.current === null) return;
-
-    const distance = touchStartX.current - touchEndX.current;
-    const minSwipeDistance = 50;
-
-    if (distance > minSwipeDistance) {
-      nextSlide(); // swipe esquerda
-    } else if (distance < -minSwipeDistance) {
-      prevSlide(); // swipe direita
+  // 🔥 Reset invisível
+  useEffect(() => {
+    if (currentIndex === slides.length - 1) {
+      setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrentIndex(1);
+      }, 700);
     }
 
-    touchStartX.current = null;
-    touchEndX.current = null;
-  };
+    if (currentIndex === 0) {
+      setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrentIndex(slides.length - 2);
+      }, 700);
+    }
+  }, [currentIndex, slides.length]);
 
+  useEffect(() => {
+    if (!isTransitioning) {
+      requestAnimationFrame(() => setIsTransitioning(true));
+    }
+  }, [isTransitioning]);
+
+  // 🔥 Autoplay
   useEffect(() => {
     if (!isHovered && testimonials.length > 1) {
       const interval = setInterval(nextSlide, autoPlayInterval);
       return () => clearInterval(interval);
     }
-  }, [isHovered, testimonials.length, autoPlayInterval]);
+  }, [isHovered, autoPlayInterval, testimonials.length]);
 
-  if (testimonials.length === 0) return null;
+  // 🔥 Drag / Swipe
+  const handleStart = (clientX: number) => {
+    startX.current = clientX;
+  };
+
+  const handleMove = (clientX: number) => {
+    if (startX.current === null) return;
+    currentTranslate.current = startX.current - clientX;
+  };
+
+  const handleEnd = () => {
+    if (startX.current === null) return;
+
+    if (currentTranslate.current > 50) nextSlide();
+    if (currentTranslate.current < -50) prevSlide();
+
+    startX.current = null;
+    currentTranslate.current = 0;
+  };
 
   return (
     <section
@@ -80,143 +98,129 @@ export default function TestimonialsCarousel({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="container mx-auto">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <span className="bg-primary-100 text-primary-700 px-4 py-2 rounded-full text-sm font-semibold">
-            Depoimentos
-          </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-sans font-bold text-slate-900 mt-4 mb-4">
-            O que nossos clientes dizem
-          </h2>
-          <p className="text-base sm:text-lg text-slate-600">
-            Avaliações reais do Google
-          </p>
-        </div>
+      <div className="container mx-auto max-w-4xl">
 
-        <div className="relative max-w-4xl mx-auto">
-          <div
-            className="relative bg-white rounded-3xl shadow-2xl p-8 sm:p-12 min-h-[400px] sm:min-h-[350px]"
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
-            {/* Ícone aspas */}
-            <div className="absolute top-6 left-6 text-primary-200">
-              <Quote size={48} fill="currentColor" />
-            </div>
-
-            {testimonials.map((testimonial, index) => (
-              <div
-                key={testimonial.id}
-                className={`transition-opacity duration-500 ${
-                  index === currentIndex
-                    ? 'opacity-100'
-                    : 'opacity-0 absolute inset-0 pointer-events-none'
-                }`}
-              >
-                <div className="flex flex-col items-center text-center pt-8">
-                  {/* Foto */}
-                  {testimonial.photo ? (
-                    <img
-                      src={testimonial.photo}
-                      alt={testimonial.name}
-                      className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-primary-200 mb-6 shadow-lg"
-                    />
-                  ) : (
-                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-primary-500 to-primary-400 flex items-center justify-center text-white text-2xl sm:text-3xl font-bold mb-6 shadow-lg border-4 border-primary-200">
-                      {testimonial.name.charAt(0)}
-                    </div>
-                  )}
-
-                  {/* Estrelas */}
-                  <div className="flex mb-4">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={
-                          i < testimonial.rating
-                            ? 'text-yellow-400'
-                            : 'text-slate-300'
-                        }
-                        size={24}
-                        fill={i < testimonial.rating ? 'currentColor' : 'none'}
-                      />
-                    ))}
-                  </div>
-
-                  {/* Texto */}
-                  <p className="text-slate-700 text-lg sm:text-xl leading-relaxed mb-6 max-w-2xl italic">
-                    "{testimonial.text}"
-                  </p>
-
-                  {/* Nome e data */}
-                  <div>
-                    <h4 className="text-slate-900 font-bold text-lg sm:text-xl">
-                      {testimonial.name}
-                    </h4>
-                    {testimonial.date && (
-                      <p className="text-slate-500 text-sm mt-1">
-                        {testimonial.date}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            {/* Setas (somente desktop) */}
-            {testimonials.length > 1 && (
-              <>
-                <button
-                  onClick={prevSlide}
-                  className="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 bg-white hover:bg-primary-100 text-primary-600 p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10 items-center justify-center"
-                  aria-label="Depoimento anterior"
-                >
-                  <ChevronLeft size={24} />
-                </button>
-
-                <button
-                  onClick={nextSlide}
-                  className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 bg-white hover:bg-primary-100 text-primary-600 p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10 items-center justify-center"
-                  aria-label="Próximo depoimento"
-                >
-                  <ChevronRight size={24} />
-                </button>
-              </>
-            )}
+        {/* Card Carousel */}
+        <div
+          className="relative bg-white rounded-3xl shadow-2xl p-8 sm:p-12 min-h-[380px] overflow-hidden"
+          onMouseDown={(e) => handleStart(e.clientX)}
+          onMouseMove={(e) => handleMove(e.clientX)}
+          onMouseUp={handleEnd}
+          onMouseLeave={handleEnd}
+          onTouchStart={(e) => handleStart(e.touches[0].clientX)}
+          onTouchMove={(e) => handleMove(e.touches[0].clientX)}
+          onTouchEnd={handleEnd}
+        >
+          {/* Quote Icon */}
+          <div className="absolute top-6 left-6 text-primary-200 z-10">
+            <Quote size={48} fill="currentColor" />
           </div>
 
-          {/* Indicadores */}
+          {/* Slides Wrapper */}
+          <div
+            className={`flex ${
+              isTransitioning
+                ? 'transition-transform duration-[700ms] ease-in-out will-change-transform'
+                : ''
+            }`}
+            style={{
+              transform: `translateX(-${currentIndex * 100}%)`,
+            }}
+          >
+            {slides.map((testimonial, index) => (
+              <div
+                key={index}
+                className="w-full flex-shrink-0 flex flex-col items-center text-center pt-8"
+              >
+                {testimonial.photo ? (
+                  <img
+                    src={testimonial.photo}
+                    alt={testimonial.name}
+                    className="w-24 h-24 rounded-full object-cover border-4 border-primary-200 mb-6 shadow-lg"
+                  />
+                ) : (
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary-500 to-primary-400 flex items-center justify-center text-white text-3xl font-bold mb-6 shadow-lg border-4 border-primary-200">
+                    {testimonial.name.charAt(0)}
+                  </div>
+                )}
+
+                {/* Stars */}
+                <div className="flex mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      size={24}
+                      className={
+                        i < testimonial.rating
+                          ? 'text-yellow-400'
+                          : 'text-slate-300'
+                      }
+                      fill={i < testimonial.rating ? 'currentColor' : 'none'}
+                    />
+                  ))}
+                </div>
+
+                {/* Text */}
+                <p className="text-slate-700 text-lg sm:text-xl leading-relaxed mb-6 max-w-2xl italic">
+                  "{testimonial.text}"
+                </p>
+
+                {/* Name */}
+                <h4 className="text-slate-900 font-bold text-lg sm:text-xl">
+                  {testimonial.name}
+                </h4>
+
+                {testimonial.date && (
+                  <p className="text-slate-500 text-sm mt-1">
+                    {testimonial.date}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Arrows */}
           {testimonials.length > 1 && (
-            <div className="flex justify-center space-x-2 mt-6">
-              {testimonials.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => goToSlide(index)}
-                  className={`h-2 rounded-full transition-all ${
-                    index === currentIndex
-                      ? 'bg-primary-600 w-8'
-                      : 'bg-slate-300 w-2 hover:bg-slate-400'
-                  }`}
-                  aria-label={`Ir para depoimento ${index + 1}`}
-                />
-              ))}
-            </div>
+            <>
+              <button
+                onClick={prevSlide}
+                className="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 bg-white hover:bg-primary-100 text-primary-600 p-3 rounded-full shadow-lg transition hover:scale-110 z-20"
+              >
+                <ChevronLeft size={24} />
+              </button>
+
+              <button
+                onClick={nextSlide}
+                className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 bg-white hover:bg-primary-100 text-primary-600 p-3 rounded-full shadow-lg transition hover:scale-110 z-20"
+              >
+                <ChevronRight size={24} />
+              </button>
+            </>
           )}
         </div>
 
-        {/* Link Google */}
-        <div className="text-center mt-8">
+        {/* ⭐ Google Premium Badge */}
+        <div className="text-center mt-12">
           <a
             href="https://www.google.com/maps/search/?api=1&query=iLABS+Laboratorio+Bonsucesso"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center space-x-2 text-primary-600 hover:text-primary-700 font-semibold text-sm sm:text-base"
+            className="group inline-flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl border border-slate-200 transition-all duration-300 hover:-translate-y-1 hover:border-primary-300"
           >
-            <Star size={18} fill="currentColor" />
-            <span>Ver todas as avaliações no Google</span>
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary-50 group-hover:bg-primary-100 transition">
+              <Star
+                size={16}
+                className="text-primary-600"
+                fill="currentColor"
+              />
+            </div>
+
+            <span className="text-slate-700 font-semibold text-sm sm:text-base group-hover:text-primary-700 transition">
+              Ver todas as avaliações no Google
+            </span>
           </a>
         </div>
+
       </div>
     </section>
   );
