@@ -48,7 +48,7 @@ export default function TestimonialsCarousel({
 
   return (
     <section
-      id="testimonials"
+      id="depoimentos"
       className="py-20 px-4 sm:px-6 bg-gradient-to-br from-slate-50 to-primary-50"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
