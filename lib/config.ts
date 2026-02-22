@@ -83,26 +83,6 @@ export const services = [
   },
 ];
 
-export const testimonials = [
-  {
-    id: 1,
-    name: 'Maria Silva',
-    text: 'Excelente atendimento! A equipe é muito atenciosa e os médicos são extremamente competentes.',
-    rating: 5,
-  },
-  {
-    id: 2,
-    name: 'João Santos',
-    text: 'Ambiente agradável e moderno. O agendamento pelo WhatsApp facilita muito!',
-    rating: 5,
-  },
-  {
-    id: 3,
-    name: 'Ana Oliveira',
-    text: 'Melhor clínica da região. Sempre sou muito bem atendida e os resultados são rápidos.',
-    rating: 5,
-  },
-];
 
 export const bannerSlides = [
   {
@@ -166,4 +146,48 @@ export const heroCarouselConfig = {
   showIndicators: true,
 };
 
+
+export const testimonials = [
+  {
+    id: 1,
+    name: 'Maria Aparecida Silva',
+    text: 'Excelente laboratório! Atendimento rápido, equipe super atenciosa e resultados sempre precisos. Faço meus exames aqui há anos e sempre saio satisfeita. Recomendo muito!',
+    rating: 5,
+    // Sem foto - vai usar inicial "M" em círculo verde
+    date: 'Janeiro 2025',
+  },
+  {
+    id: 2,
+    name: 'Carlos Eduardo Santos',
+    text: 'Melhor laboratório da região! Ambiente limpo, profissionais qualificados e preço justo. A coleta é rápida e indolor. Sempre volto aqui quando preciso fazer exames.',
+    rating: 5,
+    date: 'Fevereiro 2025',
+  },
+  {
+    id: 3,
+    name: 'Ana Paula Costa',
+    text: 'Atendimento impecável desde a recepção até a coleta. Resultado saiu no prazo combinado e com muita qualidade. Super indico para quem precisa de exames confiáveis!',
+    rating: 5,
+    date: 'Janeiro 2025',
+  },
+  {
+    id: 4,
+    name: 'Roberto Alves',
+    text: 'Fui muito bem atendido! A equipe é educada e prestativa. Fiz um check-up completo e tudo correu perfeitamente. Preços acessíveis e ótima estrutura.',
+    rating: 4,
+    date: 'Dezembro 2024',
+  },
+  {
+    id: 5,
+    name: 'Juliana Mendes',
+    text: 'Ótimo laboratório! Coleta domiciliar funciona muito bem, profissional pontual e atencioso. Resultados rápidos e precisos. Estou muito satisfeita com o serviço!',
+    rating: 5,
+    date: 'Fevereiro 2025',
+  },
+];
+
+// Configuração do carrossel
+export const testimonialsConfig = {
+  autoPlayInterval: 6000, // 6 segundos por depoimento
+};
 
