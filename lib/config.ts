@@ -176,7 +176,7 @@ export const testimonials = [
     id: 4,
     name: 'Matheus Almeida',
     text: 'Fui muito bem atendido',
-    rating: 4,
+    rating: 5,
     photo: 'https://lh3.googleusercontent.com/a-/ALV-UjVr4AuNP9bxjUMVjIn170dzjqLazTseyA4KO2AY4_kCHwivG45K9Q=s400-c',
     date: 'Fevereiro 2026',
   },
