@@ -156,24 +156,8 @@ export const testimonials = [
     photo: 'https://lh3.googleusercontent.com/a-/ALV-UjVxq1OAIAI-gemjkJHhZkIK8lebScY3c6htSmRgZ-5V1cEANDOy=s400-c',
     date: 'Fevereiro 2026',
   },
-  {
+    {
     id: 2,
-    name: 'Simone Dantas',
-    text: 'Fui muito bem atendida, as meninas da recepção são muito educadas, muito gentis. A coletora Gabriele foi muito simpática e a mão super leve. Recomendo demais o laboratório.',
-    rating: 5,
-    photo: 'https://lh3.googleusercontent.com/a-/ALV-UjUpMg3X_1LKt82XHqc_LOwiit7bj5f4l3L1B2Azw56UB_iOxGA=s400-c',
-    date: 'Janeiro 2026',
-  },
-  {
-    id: 3,
-    name: 'Mariana Matias',
-    text: 'Segunda vez que faço meus exames nesse lugar e nas 2 vezes tive um ótimo atendimento e resultados rápidos. Super recomendo',
-    rating: 5,
-    photo: 'https://lh3.googleusercontent.com/a-/ALV-UjXF0WdfzzBjguouk-sllC_F7WNvW7re8IuCaGucyeZckvKxwQ4=s400-c',
-    date: 'Janeiro 2026',
-  },
-  {
-    id: 4,
     name: 'Matheus Almeida',
     text: 'Fui muito bem atendido',
     rating: 5,
@@ -181,12 +165,28 @@ export const testimonials = [
     date: 'Fevereiro 2026',
   },
   {
-    id: 5,
+    id: 3,
+    name: 'Simone Dantas',
+    text: 'Fui muito bem atendida, as meninas da recepção são muito educadas, muito gentis. A coletora Gabriele foi muito simpática e a mão super leve. Recomendo demais o laboratório.',
+    rating: 5,
+    photo: 'https://lh3.googleusercontent.com/a-/ALV-UjUpMg3X_1LKt82XHqc_LOwiit7bj5f4l3L1B2Azw56UB_iOxGA=s400-c',
+    date: 'Janeiro 2026',
+  },
+  {
+    id: 4,
     name: 'Edson Marques',
     text: 'Excelente atendimento, super recomendado',
     rating: 5,
     photo: 'https://lh3.googleusercontent.com/a-/ALV-UjUx1UlkH3O4qFwyZ9wkpN4WWbGmnJw-bjx-fiG5zwuPmpRkVvN4=s400-c',
     date: 'Fevereiro 2026',
+  },
+    {
+    id: 5,
+    name: 'Mariana Matias',
+    text: 'Segunda vez que faço meus exames nesse lugar e nas 2 vezes tive um ótimo atendimento e resultados rápidos. Super recomendo',
+    rating: 5,
+    photo: 'https://lh3.googleusercontent.com/a-/ALV-UjXF0WdfzzBjguouk-sllC_F7WNvW7re8IuCaGucyeZckvKxwQ4=s400-c',
+    date: 'Janeiro 2026',
   },
 ];
 

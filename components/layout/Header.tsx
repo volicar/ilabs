@@ -1,10 +1,12 @@
+// components/layout/Header.tsx - VERSÃO ATUALIZADA COM LOGO
 'use client';
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { Menu, X, Heart } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { siteConfig } from '@/lib/config';
 import WhatsAppButton from '@/components/ui/WhatsAppButton';
+import Image from 'next/image';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -43,13 +45,15 @@ export default function Header() {
       <nav className="container mx-auto px-4 sm:px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary-600 to-primary-400 rounded-lg flex items-center justify-center">
-              <Heart className="text-white" size={20} fill="white" />
-            </div>
-            <span className="text-xl sm:text-2xl font-display font-bold bg-gradient-to-r from-primary-700 to-primary-500 bg-clip-text text-transparent">
-              {siteConfig.name}
-            </span>
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/images/logo-ilabs-transparente.png"
+              alt="iLABS Laboratório"
+              width={100}
+              height={50}
+              className="object-contain"
+              priority
+            />
           </Link>
 
           {/* Desktop Menu */}

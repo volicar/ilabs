@@ -1,18 +1,23 @@
-import { Heart, Instagram } from 'lucide-react';
+// components/layout/Footer.tsx - VERSÃO ATUALIZADA COM LOGO
+import { Instagram } from 'lucide-react';
 import { siteConfig } from '@/lib/config';
+import Image from 'next/image';
 
 export default function Footer() {
   return (
     <footer className="bg-slate-900 text-slate-300 py-12 px-4 sm:px-6">
       <div className="container mx-auto text-center">
-        <div className="flex items-center justify-center space-x-2 mb-4">
-          <div className="w-10 h-10 bg-gradient-to-br from-primary-600 to-primary-400 rounded-lg flex items-center justify-center">
-            <Heart className="text-white" size={20} fill="white" />
-          </div>
-          <span className="text-xl sm:text-2xl font-sans font-bold text-white">
-            {siteConfig.name}
-          </span>
+        {/* Logo */}
+        <div className="flex items-center justify-center mb-4">
+          <Image
+            src="/images/logo-ilabs-transparente.png"
+            alt="iLABS Laboratório"
+            width={150}
+            height={70}
+            className="object-contain brightness-0 invert"
+          />
         </div>
+        
         <p className="mb-6 text-sm sm:text-base">{siteConfig.description}</p>
         
         {/* Instagram */}

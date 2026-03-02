@@ -56,7 +56,7 @@ export default function AboutSection() {
           <div className="relative">
             <div className="absolute inset-0 bg-white/10 rounded-3xl -rotate-3"></div>
             <img
-              src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&h=600&fit=crop"
+              src="/images/homelab.jpeg"
               alt="Equipe médica"
               className="relative rounded-3xl shadow-2xl w-full h-[350px] sm:h-[400px] object-cover"
             />
