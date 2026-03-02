@@ -12,7 +12,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: `${siteConfig.name} - Laboratório de Análises Clínicas em ${siteConfig.contact.address.neighborhood}`,
   description: `Laboratório de análises clínicas em ${siteConfig.contact.address.city}. Exames laboratoriais com qualidade, precisão e resultados rápidos. Coleta domiciliar disponível. Atendemos em Bonsucesso, Campo Grande, Bangu, Madureira, Tijuca, Centro e Taquara.`,
-  
+
   keywords: [
     'laboratório rio de janeiro',
     'exames laboratoriais bonsucesso',
@@ -30,41 +30,49 @@ export const metadata: Metadata = {
     'iLABS',
     'laboratório rio de janeiro zona norte',
   ].join(', '),
-  
+
   authors: [{ name: siteConfig.name }],
   creator: siteConfig.name,
   publisher: siteConfig.name,
-  
+
+  icons: {
+    icon: '/images/logo-ilabs.png',
+    shortcut: '/images/logo-ilabs.png',
+    apple: '/images/logo-ilabs.png',
+  },
+
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
     url: 'https://ilabslaboratorio.com.br',
     siteName: siteConfig.name,
     title: `${siteConfig.name} - Laboratório de Análises Clínicas`,
-    description: 'Exames laboratoriais com qualidade e precisão. Resultados rápidos e confiáveis.',
+    description:
+      'Exames laboratoriais com qualidade e precisão. Resultados rápidos e confiáveis.',
     images: [
       {
-        url: '/images/og-image.jpg',
+        url: '/images/og-image-labs-completa.png',
         width: 1200,
         height: 630,
         alt: `${siteConfig.name} - Laboratório`,
       },
     ],
   },
-  
+
   twitter: {
     card: 'summary_large_image',
     title: `${siteConfig.name} - Laboratório de Análises Clínicas`,
     description: 'Exames laboratoriais com qualidade e precisão',
-    images: ['/images/og-image.jpg'],
+    images: ['/images/og-image-ilabs-verde.png'],
   },
-  
+
   verification: {
     google: 'V79RLPSTXl9Yc4B8MtnpocBK-aKAEMxXbSNI4QjtDs4',
   },
-  
+
   other: {
-    'google-site-verification': 'V79RLPSTXl9Yc4B8MtnpocBK-aKAEMxXbSNI4QjtDs4',
+    'google-site-verification':
+      'V79RLPSTXl9Yc4B8MtnpocBK-aKAEMxXbSNI4QjtDs4',
   },
 
   alternates: {
@@ -92,12 +100,11 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={inter.variable}>
       <head>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧬</text></svg>" />
-        
-        {/* Verificação Google - Tag HTML */}
-        <meta name="google-site-verification" content="V79RLPSTXl9Yc4B8MtnpocBK-aKAEMxXbSNI4QjtDs4" />
-        
-        {/* Schema.org - Dados Estruturados */}
+        <meta
+          name="google-site-verification"
+          content="V79RLPSTXl9Yc4B8MtnpocBK-aKAEMxXbSNI4QjtDs4"
+        />
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -105,7 +112,8 @@ export default function RootLayout({
               '@context': 'https://schema.org',
               '@type': 'MedicalBusiness',
               name: siteConfig.name,
-              image: 'https://ilabslaboratorio.com.br/images/logo.jpg',
+              image:
+                'https://ilabslaboratorio.com.br/images/logo-ilabs-transparente.png',
               '@id': 'https://ilabslaboratorio.com.br',
               url: 'https://ilabslaboratorio.com.br',
               telephone: siteConfig.contact.phone,
@@ -125,15 +133,21 @@ export default function RootLayout({
               openingHoursSpecification: [
                 {
                   '@type': 'OpeningHoursSpecification',
-                  dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+                  dayOfWeek: [
+                    'Monday',
+                    'Tuesday',
+                    'Wednesday',
+                    'Thursday',
+                    'Friday',
+                  ],
                   opens: '07:00',
-                  closes: '19:00',
+                  closes: '17:00',
                 },
                 {
                   '@type': 'OpeningHoursSpecification',
                   dayOfWeek: 'Saturday',
-                  opens: '08:00',
-                  closes: '13:00',
+                  opens: '07:00',
+                  closes: '12:00',
                 },
               ],
               priceRange: '$$',
