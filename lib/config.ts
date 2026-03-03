@@ -119,21 +119,21 @@ export const carouselConfig = {
 export const heroSlides = [
   {
     id: 1,
-    image: 'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=800&h=1000&fit=crop',
+    image: '/images/banner/doctor-performing.jpg',
     alt: 'Profissional de saúde',
     title: 'Exames com Precisão',
     subtitle: 'Resultados confiáveis e rápidos',
   },
   {
     id: 2,
-    image: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?w=800&h=1000&fit=crop',
+    image: '/images/banner/gynecologist-ultrasound.jpg',
     alt: 'Equipe especializada',
     title: 'Equipe Especializada',
     subtitle: 'Cuidado humano e profissional',
   },
   {
     id: 3,
-    image: 'https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=800&h=1000&fit=crop',
+    image: '/images/banner/blood-sample.jpg',
     alt: 'Atendimento humanizado',
     title: 'Atendimento Ágil',
     subtitle: 'Agende seus exames pelo WhatsApp',
