@@ -96,7 +96,7 @@ export default function Header() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-xl mt-2 rounded-b-2xl animate-fadeIn">
+          <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-xl rounded-b-2xl animate-fadeIn">
             <div className="flex flex-col space-y-4 p-6">
               {menuItems.map((item) =>
                 item.external ? (
