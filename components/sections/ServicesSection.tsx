@@ -13,7 +13,7 @@ export default function ServicesSection() {
             Cuidado completo para você
           </h2>
           <p className="text-base sm:text-lg text-slate-600">
-            Oferecemos especialidades médicas completas com atendimento humanizado
+            Oferecemos diversos atendimentos de forma humanizada e acolhedora
           </p>
         </div>
 
