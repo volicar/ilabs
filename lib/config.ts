@@ -119,7 +119,7 @@ export const carouselConfig = {
 export const heroSlides = [
   {
     id: 1,
-    image: '/images/banner/doctor-performing.jpg',
+    image: '/images/banner/exame-results.jpg',
     alt: 'Profissional de saúde',
     title: 'Exames com Precisão',
     subtitle: 'Resultados confiáveis e rápidos',
@@ -133,7 +133,7 @@ export const heroSlides = [
   },
   {
     id: 3,
-    image: '/images/banner/exame-results.jpg',
+    image: '/images/banner/doctor-performing.jpg',
     alt: 'Atendimento humanizado',
     title: 'Atendimento Ágil',
     subtitle: 'Agende seus exames pelo WhatsApp',
