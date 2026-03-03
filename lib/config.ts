@@ -126,14 +126,14 @@ export const heroSlides = [
   },
   {
     id: 2,
-    image: '/images/banner/gynecologist-ultrasound.jpg',
+    image: '/images/banner/blood-test.jpg',
     alt: 'Equipe especializada',
     title: 'Equipe Especializada',
     subtitle: 'Cuidado humano e profissional',
   },
   {
     id: 3,
-    image: '/images/banner/blood-sample.jpg',
+    image: '/images/banner/exame-results.jpg',
     alt: 'Atendimento humanizado',
     title: 'Atendimento Ágil',
     subtitle: 'Agende seus exames pelo WhatsApp',
