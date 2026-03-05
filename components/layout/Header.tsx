@@ -49,7 +49,7 @@ export default function Header() {
             <Image
               src="/images/logo-ilabs-transparente.png"
               alt="iLABS Laboratório"
-              width={100}
+              width={150}
               height={50}
               className="object-contain"
               priority
