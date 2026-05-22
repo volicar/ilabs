@@ -4,9 +4,15 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
+// Mapeamento de usuário → email interno
+const USER_MAP: Record<string, string> = {
+  volicar:   'olicar311@gmail.com',
+  marketing: 'marketing@ilabs.admin',
+};
+
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -16,11 +22,18 @@ export default function AdminLoginPage() {
     setLoading(true);
     setError('');
 
+    const email = USER_MAP[username.toLowerCase().trim()];
+    if (!email) {
+      setError('Usuário não encontrado.');
+      setLoading(false);
+      return;
+    }
+
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      setError('E-mail ou senha incorretos.');
+      setError('Usuário ou senha incorretos.');
       setLoading(false);
       return;
     }
@@ -45,14 +58,15 @@ export default function AdminLoginPage() {
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                E-mail
+                Usuário
               </label>
               <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
-                placeholder="admin@ilabs.com.br"
+                placeholder="Ex: marketing"
+                autoComplete="username"
                 className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-slate-900 placeholder-slate-400"
               />
             </div>
@@ -67,6 +81,7 @@ export default function AdminLoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 placeholder="••••••••"
+                autoComplete="current-password"
                 className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-slate-900 placeholder-slate-400"
               />
             </div>
