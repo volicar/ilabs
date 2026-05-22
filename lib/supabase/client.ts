@@ -20,3 +20,21 @@ export type HeroSlide = {
   campaign_ends_at: string | null;
   created_at: string;
 };
+
+export type HeroContent = {
+  id: string;
+  title_main: string;
+  title_highlight: string;
+  subtitle: string;
+  updated_at: string;
+};
+
+export type Service = {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  order_index: number;
+  active: boolean;
+  created_at: string;
+};
