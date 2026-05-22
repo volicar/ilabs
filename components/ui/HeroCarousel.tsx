@@ -11,17 +11,20 @@ type Slide = {
   alt: string;
   title: string;
   subtitle: string;
+  is_campaign?: boolean;
+  campaign_label?: string;
+  campaign_ends_at?: string | null;
 };
 
 const swipeConfidenceThreshold = 100;
 const swipePower = (offset: number, velocity: number) =>
   Math.abs(offset) * velocity;
 
+const STATIC: Slide[] = staticSlides.map((s) => ({ ...s, id: s.id }));
+
 export default function HeroCarousel() {
   const [[current, direction], setCurrent] = useState<[number, number]>([0, 0]);
-  const [slides, setSlides] = useState<Slide[]>(
-    staticSlides.map((s) => ({ ...s, id: s.id }))
-  );
+  const [slides, setSlides] = useState<Slide[]>(STATIC);
 
   useEffect(() => {
     async function fetchSlides() {
@@ -33,18 +36,22 @@ export default function HeroCarousel() {
         const { createClient } = await import('@/lib/supabase/client');
         const supabase = createClient();
 
+        const now = new Date().toISOString();
+
         const { data } = await supabase
           .from('hero_slides')
           .select('*')
           .eq('active', true)
+          .or(`campaign_ends_at.is.null,campaign_ends_at.gte.${now}`)
           .order('order_index', { ascending: true });
 
         if (data && data.length > 0) {
-          setSlides(data);
-          setCurrent([0, 0]);
+          // Slides do Supabase primeiro, depois os estáticos
+          setSlides([...data, ...STATIC]);
         }
+        // Se não tiver nada no Supabase, mantém só os estáticos
       } catch {
-        // mantém slides estáticos como fallback
+        // fallback: mantém slides estáticos
       }
     }
 
@@ -67,9 +74,7 @@ export default function HeroCarousel() {
   if (slides.length === 0) return null;
 
   const slide = slides[current];
-  const imageUrl = (slide as { image_url?: string; image?: string }).image_url
-    ?? (slide as { image?: string }).image
-    ?? '';
+  const imageUrl = slide.image_url ?? slide.image ?? '';
 
   return (
     <div className="relative rounded-3xl overflow-hidden shadow-2xl h-[400px] sm:h-[500px] group isolate">
@@ -98,9 +103,9 @@ export default function HeroCarousel() {
 
       {/* OVERLAY */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex flex-col justify-end p-6 sm:p-8 pointer-events-none">
-        {('is_campaign' in slide) && (slide as { is_campaign?: boolean }).is_campaign && (
+        {slide.is_campaign && slide.campaign_label && (
           <span className="mb-2 inline-block w-fit bg-amber-400 text-amber-900 text-xs font-bold px-3 py-1 rounded-full">
-            {String((slide as { campaign_label?: string }).campaign_label ?? '')}
+            {slide.campaign_label}
           </span>
         )}
         <h3 className="text-white text-2xl sm:text-3xl font-bold">{slide.title}</h3>

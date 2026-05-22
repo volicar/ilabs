@@ -87,8 +87,9 @@ export default function DashboardPage() {
         setUploading(false);
       }
 
+      // Novo slide entra no topo (order_index menor que todos os existentes)
       const nextOrder = slides.length > 0
-        ? Math.max(...slides.map((s) => s.order_index)) + 1
+        ? Math.min(...slides.map((s) => s.order_index)) - 1
         : 0;
 
       const { error } = await supabase.from('hero_slides').insert({
