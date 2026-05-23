@@ -48,3 +48,19 @@ create policy "Admins upload banner images"
 create policy "Admins delete banner images"
   on storage.objects for delete
   using (bucket_id = 'banner-images' and auth.role() = 'authenticated');
+
+-- 4. Histórico de alterações do CMS (undo de 1 nível por escopo)
+create table if not exists cms_history (
+  scope        text primary key,            -- 'banner' | 'hero' | 'services'
+  action_type  text not null,               -- 'insert' | 'update' | 'delete' | 'reorder'
+  description  text not null,               -- texto amigável: "Adicionou slide 'X'"
+  payload      jsonb not null,              -- dados necessários para reverter
+  created_at   timestamptz default now(),
+  created_by   text
+);
+
+alter table cms_history enable row level security;
+
+create policy "Admins manage cms history"
+  on cms_history for all
+  using (auth.role() = 'authenticated');

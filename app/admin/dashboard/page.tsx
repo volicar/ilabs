@@ -3,6 +3,14 @@
 import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient, type HeroSlide, type HeroContent, type Service } from '@/lib/supabase/client';
+import {
+  recordAction,
+  getLastAction,
+  clearAction,
+  applyUndo,
+  type CmsHistoryEntry,
+  type CmsScope,
+} from '@/lib/cms-history';
 
 const STORAGE_BUCKET = 'banner-images';
 type Tab = 'banner' | 'hero' | 'services';
@@ -97,6 +105,7 @@ function BannerTab({ supabase }: { supabase: ReturnType<typeof createClient> }) 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [historyVersion, setHistoryVersion] = useState(0);
   const [form, setForm] = useState({
     title: '', subtitle: '', alt: '', is_campaign: false,
     campaign_label: '', campaign_ends_at: '', image_url: '',
@@ -134,30 +143,53 @@ function BannerTab({ supabase }: { supabase: ReturnType<typeof createClient> }) 
       let imageUrl = form.image_url;
       if (form.imageFile) { setUploading(true); imageUrl = await uploadImage(form.imageFile); setUploading(false); }
       const nextOrder = slides.length > 0 ? Math.min(...slides.map((s) => s.order_index)) - 1 : 0;
-      const { error } = await supabase.from('hero_slides').insert({
+      const { data: inserted, error } = await supabase.from('hero_slides').insert({
         image_url: imageUrl, alt: form.alt || form.title, title: form.title, subtitle: form.subtitle,
         order_index: nextOrder, active: true, is_campaign: form.is_campaign,
         campaign_label: form.is_campaign ? form.campaign_label : null,
         campaign_ends_at: form.is_campaign && form.campaign_ends_at ? form.campaign_ends_at : null,
-      });
+      }).select().single();
       if (error) throw error;
+      await recordAction(supabase, {
+        scope: 'banner',
+        action_type: 'insert',
+        description: `Adicionou slide "${form.title}"`,
+        payload: { kind: 'insert', table: 'hero_slides', inserted_id: inserted.id },
+      });
       setForm({ title: '', subtitle: '', alt: '', is_campaign: false, campaign_label: '', campaign_ends_at: '', image_url: '', imageFile: null, imagePreview: '' });
       if (fileInputRef.current) fileInputRef.current.value = '';
       await fetchSlides();
+      setHistoryVersion((v) => v + 1);
     } catch (err: unknown) {
       alert('Erro: ' + (err instanceof Error ? err.message : String(err)));
     } finally { setSaving(false); setUploading(false); }
   }
 
   async function toggleActive(slide: HeroSlide) {
+    await recordAction(supabase, {
+      scope: 'banner',
+      action_type: 'update',
+      description: slide.active ? `Ocultou slide "${slide.title}"` : `Reexibiu slide "${slide.title}"`,
+      payload: { kind: 'update', table: 'hero_slides', id: slide.id, previous: { active: slide.active } },
+    });
     await supabase.from('hero_slides').update({ active: !slide.active }).eq('id', slide.id);
     await fetchSlides();
+    setHistoryVersion((v) => v + 1);
   }
 
   async function deleteSlide(id: string) {
     if (!confirm('Remover este slide?')) return;
+    const slide = slides.find((s) => s.id === id);
+    if (!slide) return;
     await supabase.from('hero_slides').delete().eq('id', id);
+    await recordAction(supabase, {
+      scope: 'banner',
+      action_type: 'delete',
+      description: `Removeu slide "${slide.title}"`,
+      payload: { kind: 'delete', table: 'hero_slides', row: slide as unknown as Record<string, unknown> },
+    });
     await fetchSlides();
+    setHistoryVersion((v) => v + 1);
   }
 
   async function moveSlide(id: string, direction: 'up' | 'down') {
@@ -165,15 +197,32 @@ function BannerTab({ supabase }: { supabase: ReturnType<typeof createClient> }) 
     const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
     if (swapIdx < 0 || swapIdx >= slides.length) return;
     const a = slides[idx]; const b = slides[swapIdx];
+    const swaps = [
+      { id: a.id, order_index: a.order_index },
+      { id: b.id, order_index: b.order_index },
+    ];
     await Promise.all([
       supabase.from('hero_slides').update({ order_index: b.order_index }).eq('id', a.id),
       supabase.from('hero_slides').update({ order_index: a.order_index }).eq('id', b.id),
     ]);
+    await recordAction(supabase, {
+      scope: 'banner',
+      action_type: 'reorder',
+      description: `Moveu slide "${a.title}" para ${direction === 'up' ? 'cima' : 'baixo'}`,
+      payload: { kind: 'reorder', table: 'hero_slides', swaps },
+    });
     await fetchSlides();
+    setHistoryVersion((v) => v + 1);
   }
 
   return (
     <div className="space-y-8">
+      <UndoPanel
+        supabase={supabase}
+        scope="banner"
+        version={historyVersion}
+        onUndone={async () => { await fetchSlides(); setHistoryVersion((v) => v + 1); }}
+      />
       <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
         <h2 className="text-lg font-bold text-slate-900 mb-5">Adicionar Slide</h2>
         <form onSubmit={handleAddSlide} className="space-y-4">
@@ -253,18 +302,40 @@ function HeroTab({ supabase }: { supabase: ReturnType<typeof createClient> }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [historyVersion, setHistoryVersion] = useState(0);
+
+  async function loadHero() {
+    const { data } = await supabase.from('hero_content').select('*').limit(1).single();
+    if (data) setForm(data);
+  }
 
   useEffect(() => {
-    supabase.from('hero_content').select('*').limit(1).single().then(({ data }) => {
-      if (data) setForm(data);
-      setLoading(false);
-    });
+    loadHero().then(() => setLoading(false));
   }, []);
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
+    const { data: previous } = await supabase.from('hero_content').select('*').eq('id', form.id).maybeSingle();
     await supabase.from('hero_content').upsert({ ...form, updated_at: new Date().toISOString() });
+    if (previous) {
+      await recordAction(supabase, {
+        scope: 'hero',
+        action_type: 'update',
+        description: 'Atualizou texto principal',
+        payload: {
+          kind: 'update',
+          table: 'hero_content',
+          id: form.id,
+          previous: {
+            title_main: previous.title_main,
+            title_highlight: previous.title_highlight,
+            subtitle: previous.subtitle,
+          },
+        },
+      });
+      setHistoryVersion((v) => v + 1);
+    }
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
@@ -273,7 +344,14 @@ function HeroTab({ supabase }: { supabase: ReturnType<typeof createClient> }) {
   if (loading) return <div className="text-center py-20 text-slate-400">Carregando...</div>;
 
   return (
-    <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 max-w-2xl">
+    <div className="space-y-6 max-w-2xl">
+      <UndoPanel
+        supabase={supabase}
+        scope="hero"
+        version={historyVersion}
+        onUndone={async () => { await loadHero(); setHistoryVersion((v) => v + 1); }}
+      />
+      <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
       <h2 className="text-lg font-bold text-slate-900 mb-2">Texto Principal do Site</h2>
       <p className="text-sm text-slate-500 mb-6">Altera o título e subtítulo da seção principal (hero).</p>
 
@@ -313,7 +391,8 @@ function HeroTab({ supabase }: { supabase: ReturnType<typeof createClient> }) {
           {saving ? 'Salvando...' : saved ? 'Salvo!' : 'Salvar Alterações'}
         </button>
       </form>
-    </section>
+      </section>
+    </div>
   );
 }
 
@@ -322,6 +401,7 @@ function ServicesTab({ supabase }: { supabase: ReturnType<typeof createClient> }
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [historyVersion, setHistoryVersion] = useState(0);
   const [form, setForm] = useState({ title: '', description: '', icon: '🔬' });
 
   useEffect(() => { fetchServices(); }, []);
@@ -337,21 +417,50 @@ function ServicesTab({ supabase }: { supabase: ReturnType<typeof createClient> }
     e.preventDefault();
     setSaving(true);
     const nextOrder = services.length > 0 ? Math.max(...services.map((s) => s.order_index)) + 1 : 0;
-    await supabase.from('services').insert({ ...form, order_index: nextOrder, active: true });
+    const { data: inserted, error } = await supabase
+      .from('services')
+      .insert({ ...form, order_index: nextOrder, active: true })
+      .select()
+      .single();
+    if (!error && inserted) {
+      await recordAction(supabase, {
+        scope: 'services',
+        action_type: 'insert',
+        description: `Adicionou serviço "${form.title}"`,
+        payload: { kind: 'insert', table: 'services', inserted_id: inserted.id },
+      });
+    }
     setForm({ title: '', description: '', icon: '🔬' });
     await fetchServices();
+    setHistoryVersion((v) => v + 1);
     setSaving(false);
   }
 
   async function toggleActive(service: Service) {
+    await recordAction(supabase, {
+      scope: 'services',
+      action_type: 'update',
+      description: service.active ? `Ocultou serviço "${service.title}"` : `Reexibiu serviço "${service.title}"`,
+      payload: { kind: 'update', table: 'services', id: service.id, previous: { active: service.active } },
+    });
     await supabase.from('services').update({ active: !service.active }).eq('id', service.id);
     await fetchServices();
+    setHistoryVersion((v) => v + 1);
   }
 
   async function deleteService(id: string) {
     if (!confirm('Remover este serviço?')) return;
+    const service = services.find((s) => s.id === id);
+    if (!service) return;
     await supabase.from('services').delete().eq('id', id);
+    await recordAction(supabase, {
+      scope: 'services',
+      action_type: 'delete',
+      description: `Removeu serviço "${service.title}"`,
+      payload: { kind: 'delete', table: 'services', row: service as unknown as Record<string, unknown> },
+    });
     await fetchServices();
+    setHistoryVersion((v) => v + 1);
   }
 
   async function moveService(id: string, direction: 'up' | 'down') {
@@ -359,15 +468,32 @@ function ServicesTab({ supabase }: { supabase: ReturnType<typeof createClient> }
     const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
     if (swapIdx < 0 || swapIdx >= services.length) return;
     const a = services[idx]; const b = services[swapIdx];
+    const swaps = [
+      { id: a.id, order_index: a.order_index },
+      { id: b.id, order_index: b.order_index },
+    ];
     await Promise.all([
       supabase.from('services').update({ order_index: b.order_index }).eq('id', a.id),
       supabase.from('services').update({ order_index: a.order_index }).eq('id', b.id),
     ]);
+    await recordAction(supabase, {
+      scope: 'services',
+      action_type: 'reorder',
+      description: `Moveu serviço "${a.title}" para ${direction === 'up' ? 'cima' : 'baixo'}`,
+      payload: { kind: 'reorder', table: 'services', swaps },
+    });
     await fetchServices();
+    setHistoryVersion((v) => v + 1);
   }
 
   return (
     <div className="space-y-8">
+      <UndoPanel
+        supabase={supabase}
+        scope="services"
+        version={historyVersion}
+        onUndone={async () => { await fetchServices(); setHistoryVersion((v) => v + 1); }}
+      />
       <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
         <h2 className="text-lg font-bold text-slate-900 mb-5">Adicionar Serviço</h2>
         <form onSubmit={handleAdd} className="space-y-4">
@@ -441,6 +567,65 @@ function ServicesTab({ supabase }: { supabase: ReturnType<typeof createClient> }
             </div>
           )}
       </section>
+    </div>
+  );
+}
+
+/* ─────────────── UNDO PANEL ─────────────── */
+function UndoPanel({ supabase, scope, version, onUndone }: {
+  supabase: ReturnType<typeof createClient>;
+  scope: CmsScope;
+  version: number;
+  onUndone: () => void | Promise<void>;
+}) {
+  const [entry, setEntry] = useState<CmsHistoryEntry | null>(null);
+  const [undoing, setUndoing] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    getLastAction(supabase, scope).then((e) => { if (!cancelled) setEntry(e); });
+    return () => { cancelled = true; };
+  }, [scope, version]);
+
+  async function handleUndo() {
+    if (!entry) return;
+    if (!confirm(`Desfazer: ${entry.description}?`)) return;
+    setUndoing(true);
+    try {
+      await applyUndo(supabase, entry);
+      await clearAction(supabase, scope);
+      setEntry(null);
+      await onUndone();
+    } catch (err: unknown) {
+      alert('Não foi possível desfazer: ' + (err instanceof Error ? err.message : String(err)));
+    } finally {
+      setUndoing(false);
+    }
+  }
+
+  if (!entry) return null;
+
+  const when = entry.created_at ? new Date(entry.created_at).toLocaleString('pt-BR') : '';
+
+  return (
+    <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center justify-between gap-4">
+      <div className="flex items-start gap-3 min-w-0">
+        <svg className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+        </svg>
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-amber-900">Última alteração</p>
+          <p className="text-sm text-amber-800 truncate">{entry.description}</p>
+          {when && <p className="text-xs text-amber-600 mt-0.5">{when}{entry.created_by ? ` · ${entry.created_by}` : ''}</p>}
+        </div>
+      </div>
+      <button
+        onClick={handleUndo}
+        disabled={undoing}
+        className="bg-amber-600 hover:bg-amber-700 disabled:bg-amber-300 text-white font-semibold px-4 py-2 rounded-xl transition-colors text-sm flex-shrink-0"
+      >
+        {undoing ? 'Desfazendo...' : 'Desfazer'}
+      </button>
     </div>
   );
 }
