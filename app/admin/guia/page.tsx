@@ -118,6 +118,21 @@ export default function GuiaPage() {
           tip="Quando não há serviços cadastrados aqui, o site exibe automaticamente os serviços padrão do sistema."
         />
 
+        {/* Desfazer */}
+        <GuiaSection
+          number="6"
+          title="Botão Desfazer — Como reverter uma ação"
+          icon="↩️"
+          description="Cada aba do painel guarda a última alteração feita. Se você cometeu um erro, é possível desfazê-lo com um clique."
+          steps={[
+            'Após realizar qualquer alteração (adicionar, editar, remover ou reordenar), um botão Desfazer aparece no final da aba',
+            'O botão mostra a descrição do que foi feito — confirme se é a ação correta',
+            'Clique em Desfazer e confirme na janela que aparecer',
+            'A ação será revertida e a página será atualizada automaticamente',
+          ]}
+          tip="O sistema guarda apenas a última ação de cada aba. Depois de desfazer, não é possível desfazer novamente — use com atenção."
+        />
+
         {/* Dicas gerais */}
         <div className="bg-primary-50 border border-primary-100 rounded-2xl p-6">
           <h3 className="font-bold text-primary-800 text-base mb-3 flex items-center gap-2">
