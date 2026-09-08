@@ -1,5 +1,6 @@
 import { ChevronRight } from 'lucide-react';
 import { createWhatsAppLink } from '@/lib/utils';
+import { resolveServiceIcon } from '@/lib/serviceIcons';
 
 interface ServiceCardProps {
   title: string;
@@ -9,12 +10,20 @@ interface ServiceCardProps {
 }
 
 export default function ServiceCard({ title, description, icon, index = 0 }: ServiceCardProps) {
+  const Icon = resolveServiceIcon(icon);
+
   return (
     <div 
       className="group bg-gradient-to-br from-slate-50 to-primary-50 p-6 sm:p-8 rounded-2xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-slate-100"
       style={{ animationDelay: `${index * 100}ms` }}
     >
-      <div className="text-4xl sm:text-5xl mb-4">{icon}</div>
+      {Icon ? (
+        <div className="w-14 h-14 sm:w-16 sm:h-16 mb-4 rounded-xl bg-primary-100 text-primary-600 flex items-center justify-center group-hover:bg-primary-600 group-hover:text-white transition-colors">
+          <Icon size={28} strokeWidth={1.75} className="sm:w-8 sm:h-8" />
+        </div>
+      ) : (
+        <div className="text-4xl sm:text-5xl mb-4">{icon}</div>
+      )}
       <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-3">{title}</h3>
       <p className="text-sm sm:text-base text-slate-600 mb-6">{description}</p>
       <a 

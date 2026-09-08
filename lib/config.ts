@@ -49,37 +49,37 @@ export const services = [
     id: 1,
     title: 'Exames Laboratoriais',
     description: 'Hemograma completo, Glicose, Lipidograma, Hormônios em geral, exames de urina, fezes, análise de preventivo, biópsias e muitos outros exames.',
-    icon: '👨‍⚕️',
+    icon: 'stethoscope',
   },
   {
     id: 2,
     title: 'Coleta Domiciliar',
     description: 'Realize seus exames no conforto da sua casa.',
-    icon: '💉🏠',
+    icon: 'home',
   },
   {
     id: 3,
     title: 'Teste de Paternidade',
     description: 'Resultados seguros e precisos em até 10 dias úteis.',
-    icon: '🧬',
+    icon: 'dna',
   },
   {
     id: 4,
     title: 'Sexagem Fetal',
     description: 'Descubra o sexo do seu bebê a partir de 8 semanas de gestação.',
-    icon: '👶',
+    icon: 'baby',
   },
   {
     id: 5,
     title: 'Toxicológico para Detran, Concursos e CLT',
     description: 'Exame realizado para identificar o uso de drogas nos últimos 90 dias.',
-    icon: '🔬',
+    icon: 'microscope',
   },
   {
     id: 6,
     title: 'Vacinação',
     description: 'Excelência em imunização, previna-se contra diversos tipos de doenças.',
-    icon: '💉',
+    icon: 'syringe',
   },
 ];
 
