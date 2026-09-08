@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { heroSlides as staticSlides, heroCarouselConfig } from '@/lib/config';
 
 type Slide = {
@@ -26,6 +27,11 @@ const STATIC: Slide[] = staticSlides.map((s) => ({ ...s, id: s.id }));
 export default function HeroCarousel() {
   const [[current, direction], setCurrent] = useState<[number, number]>([0, 0]);
   const [slides, setSlides] = useState<Slide[]>(STATIC);
+  const [paused, setPaused] = useState(false);
+  const reduceMotion = useReducedMotion();
+  // Trava a navegação enquanto uma transição está em andamento, senão
+  // cliques repetidos empilham vários slides saindo ao mesmo tempo.
+  const animating = useRef(false);
 
   useEffect(() => {
     async function fetchSlides() {
@@ -59,18 +65,35 @@ export default function HeroCarousel() {
     fetchSlides();
   }, []);
 
-  useEffect(() => {
-    if (!heroCarouselConfig.autoPlayInterval || slides.length === 0) return;
-    const interval = setInterval(() => paginate(1), heroCarouselConfig.autoPlayInterval);
-    return () => clearInterval(interval);
-  }, [current, slides.length]);
+  const paginate = useCallback((newDirection: number) => {
+    if (animating.current) return;
+    animating.current = true;
+    setCurrent(([prev]) => [(prev + newDirection + slides.length) % slides.length, newDirection]);
+  }, [slides.length]);
 
-  const paginate = (newDirection: number) => {
+  const goTo = useCallback((index: number) => {
+    if (animating.current) return;
     setCurrent(([prev]) => {
-      const next = (prev + newDirection + slides.length) % slides.length;
-      return [next, newDirection];
+      if (index === prev) return [prev, 0];
+      animating.current = true;
+      return [index, index > prev ? 1 : -1];
     });
-  };
+  }, []);
+
+  // Pausa quando a aba fica em segundo plano, senão o timer continua
+  // rodando e a volta traz um salto acumulado.
+  useEffect(() => {
+    const onVisibility = () => setPaused(document.hidden);
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => document.removeEventListener('visibilitychange', onVisibility);
+  }, []);
+
+  useEffect(() => {
+    if (paused || slides.length < 2) return;
+    if (!heroCarouselConfig.autoPlayInterval) return;
+    const timer = setTimeout(() => paginate(1), heroCarouselConfig.autoPlayInterval);
+    return () => clearTimeout(timer);
+  }, [current, slides.length, paused, paginate]);
 
   if (slides.length === 0) return null;
 
@@ -80,24 +103,39 @@ export default function HeroCarousel() {
   const nextImageUrl = nextSlide === slide ? '' : (nextSlide.image_url ?? nextSlide.image ?? '');
 
   return (
-    <div className="relative rounded-3xl overflow-hidden shadow-2xl h-[400px] sm:h-[500px] group isolate">
-      <AnimatePresence initial={false} custom={direction}>
+    <div
+      className="relative rounded-3xl overflow-hidden shadow-2xl h-[400px] sm:h-[500px] group isolate"
+      role="region"
+      aria-roledescription="carrossel"
+      aria-label="Destaques do laboratório"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocusCapture={() => setPaused(true)}
+      onBlurCapture={() => setPaused(false)}
+    >
+      <AnimatePresence initial={false} custom={direction} onExitComplete={() => { animating.current = false; }}>
         <motion.div
           key={String(slide.id)}
           className="absolute inset-0"
           custom={direction}
-          initial={{ x: direction > 0 ? '100%' : '-100%' }}
-          animate={{ x: 0 }}
-          exit={{ x: direction > 0 ? '-100%' : '100%' }}
-          transition={{ x: { duration: 0.7, ease: 'easeInOut' } }}
-          drag="x"
+          initial={reduceMotion ? { opacity: 0 } : { x: direction > 0 ? '100%' : '-100%' }}
+          animate={reduceMotion ? { opacity: 1 } : { x: 0 }}
+          exit={reduceMotion ? { opacity: 0 } : { x: direction > 0 ? '-100%' : '100%' }}
+          transition={reduceMotion
+            ? { opacity: { duration: 0.25 } }
+            : { x: { duration: 0.45, ease: [0.22, 1, 0.36, 1] } }}
+          drag={reduceMotion ? false : 'x'}
+          dragDirectionLock
           dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0.6}
+          dragElastic={0.18}
+          dragMomentum={false}
           onDragEnd={(_, { offset, velocity }) => {
             const swipe = swipePower(offset.x, velocity.x);
             if (swipe < -swipeConfidenceThreshold) paginate(1);
             else if (swipe > swipeConfidenceThreshold) paginate(-1);
           }}
+          aria-roledescription="slide"
+          aria-label={`${current + 1} de ${slides.length}: ${slide.title}`}
         >
           <Image
             src={imageUrl}
@@ -134,15 +172,17 @@ export default function HeroCarousel() {
         <>
           <button
             onClick={() => paginate(-1)}
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white w-10 h-10 rounded-full shadow hidden sm:flex items-center justify-center z-10"
+            aria-label="Slide anterior"
+            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-slate-700 w-10 h-10 rounded-full shadow hidden sm:flex items-center justify-center z-10 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
           >
-            ‹
+            <ChevronLeft size={20} strokeWidth={2.25} />
           </button>
           <button
             onClick={() => paginate(1)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white w-10 h-10 rounded-full shadow hidden sm:flex items-center justify-center z-10"
+            aria-label="Próximo slide"
+            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-slate-700 w-10 h-10 rounded-full shadow hidden sm:flex items-center justify-center z-10 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
           >
-            ›
+            <ChevronRight size={20} strokeWidth={2.25} />
           </button>
         </>
       )}
@@ -153,9 +193,11 @@ export default function HeroCarousel() {
           {slides.map((s, index) => (
             <button
               key={String(s.id)}
-              onClick={() => setCurrent([index, index > current ? 1 : -1])}
-              className={`h-2 w-2 rounded-full transition ${
-                index === current ? 'bg-primary-500' : 'bg-white/60'
+              onClick={() => goTo(index)}
+              aria-label={`Ir para o slide ${index + 1}: ${s.title}`}
+              aria-current={index === current}
+              className={`h-2 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${
+                index === current ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'
               }`}
             />
           ))}
