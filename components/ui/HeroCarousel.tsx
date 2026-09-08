@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { heroSlides as staticSlides, heroCarouselConfig } from '@/lib/config';
 
@@ -75,20 +76,19 @@ export default function HeroCarousel() {
 
   const slide = slides[current];
   const imageUrl = slide.image_url ?? slide.image ?? '';
+  const nextSlide = slides[(current + 1) % slides.length];
+  const nextImageUrl = nextSlide === slide ? '' : (nextSlide.image_url ?? nextSlide.image ?? '');
 
   return (
     <div className="relative rounded-3xl overflow-hidden shadow-2xl h-[400px] sm:h-[500px] group isolate">
       <AnimatePresence initial={false} custom={direction}>
-        <motion.img
+        <motion.div
           key={String(slide.id)}
-          src={imageUrl}
-          alt={slide.alt}
-          className="absolute inset-0 w-full h-full object-cover select-none"
-          draggable={false}
+          className="absolute inset-0"
           custom={direction}
-          initial={{ x: direction > 0 ? '100%' : '-100%', opacity: 1 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: direction > 0 ? '-100%' : '100%', opacity: 1 }}
+          initial={{ x: direction > 0 ? '100%' : '-100%' }}
+          animate={{ x: 0 }}
+          exit={{ x: direction > 0 ? '-100%' : '100%' }}
           transition={{ x: { duration: 0.7, ease: 'easeInOut' } }}
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
@@ -98,8 +98,25 @@ export default function HeroCarousel() {
             if (swipe < -swipeConfidenceThreshold) paginate(1);
             else if (swipe > swipeConfidenceThreshold) paginate(-1);
           }}
-        />
+        >
+          <Image
+            src={imageUrl}
+            alt={slide.alt}
+            fill
+            priority={current === 0}
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover select-none pointer-events-none"
+            draggable={false}
+          />
+        </motion.div>
       </AnimatePresence>
+
+      {/* Pré-carrega o próximo slide para que ele não seja buscado durante a transição. */}
+      {nextImageUrl && (
+        <div aria-hidden className="absolute h-px w-px opacity-0 -z-10 overflow-hidden">
+          <Image src={nextImageUrl} alt="" fill sizes="(max-width: 768px) 100vw, 50vw" />
+        </div>
+      )}
 
       {/* OVERLAY */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex flex-col justify-end p-6 sm:p-8 pointer-events-none">
